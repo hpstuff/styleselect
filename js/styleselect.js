@@ -154,7 +154,7 @@
 	return function(selector) {
 
 		// Use native selects (which pop up large native UIs to go through the options ) on iOS/Android
-		if ( navigator.userAgent.match( /iPad|iPhone|Android/i ) ) {
+		if ( navigator.userAgent.match( /iPhone|Android/i ) ) {
 			return
 		}
 
@@ -191,7 +191,7 @@
 			}else {
 				if (isGroupClosed) {
 					isGroupClosed = false;
-					result += '<div class="ss-group" data-label="defaul">';
+					result += '<div class="ss-group" data-label="default">';
 				}
 				result += createOption(element, index);
 			}
