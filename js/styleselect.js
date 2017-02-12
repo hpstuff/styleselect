@@ -174,15 +174,25 @@
 		// some browsers may have bugs with this but future implementation may improve
 		realSelect.setAttribute('aria-hidden', "false");
 		
+		var isGroupClosed = true;
+		
 		var createOptionOrGroup = function(element, index) {
 			var result = '';
 			if (element.tagName.toUpperCase() === 'OPTGROUP') {
-				result += '<div class="ss-group" data-label="' + element.label + '">';
+				if (index > 0) {
+					isGroupClosed = true;
+					result + = '</div>'; //close default group
+				}
+				result += '<div class="ss-group" data-label="' + element.label + '">'; //add group
 				element.children.forEach(function(option, i){
 					result += createOption(option, index + i);
 				});
 				result += '</div>'
 			}else {
+				if (isGroupClosed) {
+					isGroupClosed = false;
+					result += '<div class="ss-group" data-label="defaul">';
+				}
 				result += createOption(element, index);
 			}
 			return result;
