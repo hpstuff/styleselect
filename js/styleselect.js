@@ -183,7 +183,7 @@
 				});
 				result += '</div>'
 			}else {
-				result += createOption(option, index + i);
+				result += createOption(element, index);
 			}
 			return result;
 		};
