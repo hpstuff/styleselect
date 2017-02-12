@@ -173,14 +173,25 @@
 		// According to http://www.w3.org/TR/wai-aria/states_and_properties#aria-hidden
 		// some browsers may have bugs with this but future implementation may improve
 		realSelect.setAttribute('aria-hidden', "false");
-
-		// Build styled clones of all the real options
-		var selectedOptionHTML;
-		var optionsHTML = '<div class="ss-dropdown">';
-		realOptions.forEach(function(realOption, index){
+		
+		var createOptionOrGroup = function(element, index) {
+			var result = '';
+			if (element.tagName.toUpperCase() === 'OPTGROUP') {
+				result += '<div class="ss-group" data-label="' + element.label + '">';
+				element.children.forEach(function(option, i){
+					result += createOption(option, index + i);
+				});
+				result += '</div>'
+			}else {
+				result += createOption(option, index + i);
+			}
+			return result;
+		};
+					
+		var createOption = function(realOption, index) {
 			var text = realOption.textContent,
 				value = realOption.getAttribute('value') || '',
-                cssClass = 'ss-option';
+        cssClass = 'ss-option';
 
 			if (index === selectedIndex) {
 				// Mark first item as selected-option - this is where we store state for the styled select box
@@ -188,13 +199,21 @@
 				selectedOptionHTML = '<div class="ss-selected-option" tabindex="0" data-value="' + value + '">' + text + '</div>'
 			}
 
-            if (realOption.disabled) {
-                cssClass += ' disabled';
-            }
+			if (realOption.disabled) {
+					cssClass += ' disabled';
+			}
 
             // Continue building optionsHTML
-			optionsHTML += '<div class="' + cssClass + '" data-value="' + value + '">' + text + '</div>';
+			return '<div class="' + cssClass + '" data-value="' + value + '">' + text + '</div>';
+		};
+
+		// Build styled clones of all the real options
+		var selectedOptionHTML;
+		var optionsHTML = '<div class="ss-dropdown">';
+		realOptions.forEach(function(element, index){
+			optionsHTML += createOptionOrGroup(element, index);
 		});
+		
 		optionsHTML += '</div>';
 		styleSelectHTML += selectedOptionHTML += optionsHTML += '</div>';
 		// And add out styled select just after the real select
