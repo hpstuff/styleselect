@@ -181,7 +181,7 @@
 			if (element.tagName.toUpperCase() === 'OPTGROUP') {
 				if (index > 0) {
 					isGroupClosed = true;
-					result + = '</div>'; //close default group
+					result += '</div>'; //close default group
 				}
 				result += '<div class="ss-group" data-label="' + element.label + '">'; //add group
 				element.children.forEach(function(option, i){
