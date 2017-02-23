@@ -1,20 +1,20 @@
 // UMD module from From https://github.com/umdjs/umd/blob/master/returnExports.js
 // From 'if the module has no dependencies' example.
 (function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define([], factory);
-    } else if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like environments that support module.exports,
-        // like Node.
-        module.exports = factory();
-    } else {
-        // Browser globals (root is window)
-        root.returnExports = factory();
-  }
+	if (typeof define === 'function' && define.amd) {
+		// AMD. Register as an anonymous module.
+		define([], factory);
+	} else if (typeof exports === 'object') {
+		// Node. Does not work with strict CommonJS, but
+		// only CommonJS-like environments that support module.exports,
+		// like Node.
+		module.exports = factory();
+	} else {
+		// Browser globals (root is window)
+		root.returnExports = factory();
+	}
 }(this, function () {
-// End of UMD module
+	// End of UMD module
 
 	// Quick aliases and polyfills if needed
 	var query = document.querySelector.bind(document);
@@ -52,32 +52,32 @@
 	// IE10 dataset polyfill
 	// From https://gist.githubusercontent.com/brettz9/4093766/raw/ba31a05e7ce21af67c6cafee9b3f439c86e95b01/html5-dataset.js
 	if (!document.documentElement.dataset &&
-			 // FF is empty while IE gives empty object
+			// FF is empty while IE gives empty object
 			(!Object.getOwnPropertyDescriptor(Element.prototype, 'dataset')  ||
-			!Object.getOwnPropertyDescriptor(Element.prototype, 'dataset').get)
-		) {
+			 !Object.getOwnPropertyDescriptor(Element.prototype, 'dataset').get)
+		 ) {
 		var propDescriptor = {
 			enumerable: true,
 			get: function () {
 				'use strict';
 				var i,
-					that = this,
-					HTML5_DOMStringMap,
-					attrVal, attrName, propName,
-					attribute,
-					attributes = this.attributes,
-					attsLength = attributes.length,
-					toUpperCase = function (n0) {
-						return n0.charAt(1).toUpperCase();
-					},
-					getter = function () {
-						return this;
-					},
-					setter = function (attrName, value) {
-						return (typeof value !== 'undefined') ?
-							this.setAttribute(attrName, value) :
-							this.removeAttribute(attrName);
-					};
+				that = this,
+				HTML5_DOMStringMap,
+				attrVal, attrName, propName,
+				attribute,
+				attributes = this.attributes,
+				attsLength = attributes.length,
+				toUpperCase = function (n0) {
+					return n0.charAt(1).toUpperCase();
+				},
+				getter = function () {
+					return this;
+				},
+				setter = function (attrName, value) {
+					return (typeof value !== 'undefined') ?
+						this.setAttribute(attrName, value) :
+						this.removeAttribute(attrName);
+				};
 				try { // Simulate DOMStringMap w/accessor support
 					// Test setting accessor on normal object
 					({}).__defineGetter__('test', function () {});
@@ -91,7 +91,7 @@
 					// Fix: This test really should allow any XML Name without
 					//         colons (and non-uppercase for XHTML)
 					if (attribute && attribute.name &&
-						(/^data-\w[\w\-]*$/).test(attribute.name)) {
+							(/^data-\w[\w\-]*$/).test(attribute.name)) {
 						attrVal = attribute.value;
 						attrName = attribute.name;
 						// Change to CamelCase
@@ -162,6 +162,7 @@
 			realOptions = realSelect.children,
 			selectedIndex = realSelect.selectedIndex,
 			uuid = makeUUID(),
+			selectedIndex = realSelect.selectedIndex,
 			styleSelectHTML = '<div class="style-select" aria-hidden="true" data-ss-uuid="' + uuid + '">';
 
 		// The index of the item that's being highlighted by the mouse or keyboard
@@ -173,9 +174,17 @@
 		// According to http://www.w3.org/TR/wai-aria/states_and_properties#aria-hidden
 		// some browsers may have bugs with this but future implementation may improve
 		realSelect.setAttribute('aria-hidden', "false");
-		
+
 		var isGroupClosed = true;
-		
+
+		setInterval(function(){
+			if (realSelect.selectedIndex !== selectedIndex){
+				let selectedRealOption = realOptions[realSelect.selectedIndex];
+				changeRealSelectBox(selectedRealOption.value, selectedRealOption.innerHTML, true);
+				selectedIndex = realSelect.selectedIndex;
+			}
+		}, 1000);
+
 		var createOptionOrGroup = function(element, index) {
 			var result = '';
 			if (element.tagName.toUpperCase() === 'OPTGROUP') {
@@ -197,11 +206,11 @@
 			}
 			return result;
 		};
-					
+
 		var createOption = function(realOption, index) {
 			var text = realOption.textContent,
 				value = realOption.getAttribute('value') || '',
-        cssClass = 'ss-option';
+				cssClass = 'ss-option';
 
 			if (index === selectedIndex) {
 				// Mark first item as selected-option - this is where we store state for the styled select box
@@ -210,10 +219,10 @@
 			}
 
 			if (realOption.disabled) {
-					cssClass += ' disabled';
+				cssClass += ' disabled';
 			}
 
-            // Continue building optionsHTML
+			// Continue building optionsHTML
 			return '<div class="' + cssClass + '" data-value="' + value + '">' + text + '</div>';
 		};
 
@@ -223,7 +232,7 @@
 		realOptions.forEach(function(element, index){
 			optionsHTML += createOptionOrGroup(element, index);
 		});
-		
+
 		optionsHTML += '</div>';
 		styleSelectHTML += selectedOptionHTML += optionsHTML += '</div>';
 		// And add out styled select just after the real select
@@ -233,7 +242,7 @@
 		var styleSelectOptions = styledSelect.querySelectorAll('.ss-option');
 		var selectedOption = styledSelect.querySelector('.ss-selected-option');
 
-		var changeRealSelectBox = function(newValue, newLabel) {
+		var changeRealSelectBox = function(newValue, newLabel, prevent) {
 			// Close styledSelect
 			styledSelect.classList.remove('open');
 
@@ -250,6 +259,10 @@
 				}
 			});
 
+			if(prevent) {
+				return;
+			}
+
 			// Update real select box
 			realSelect.value = newValue;
 
@@ -262,11 +275,11 @@
 		styleSelectOptions.forEach(function(unused, index){
 			var styleSelectOption = styleSelectOptions.item(index);
 
-            if (styleSelectOption.className.match(/\bdisabled\b/)) {
-                return;
-            }
+			if (styleSelectOption.className.match(/\bdisabled\b/)) {
+				return;
+			}
 
-            styleSelectOption.addEventListener('click', function(ev) {
+			styleSelectOption.addEventListener('click', function(ev) {
 				var target = ev.target,
 					styledSelectBox = target.parentNode.parentNode,
 					uuid = styledSelectBox.getAttribute('data-ss-uuid'),
@@ -329,50 +342,50 @@
 			var styledSelectBox = ev.target.parentNode;
 
 			switch (ev.keyCode) {
-				case KEYCODES.SPACE:
-					// Space shows and hides styles select boxes
-					toggleStyledSelect(styledSelectBox);
-					break;
-				case KEYCODES.DOWN:
-				case KEYCODES.UP:
-					// Move the highlight up and down
-					if ( ! styledSelectBox.classList.contains('open') ) {
-						// If style select is not open, up/down should open it.
+					case KEYCODES.SPACE:
+							// Space shows and hides styles select boxes
 						toggleStyledSelect(styledSelectBox);
-					} else {
-						// If style select is already open, these should change what the highlighted option is
-						if ( ev.keyCode === KEYCODES.UP ) {
-							// Up arrow moves earlier in list
-							if ( highlightedOptionIndex !== 0 ) {
-								highlightedOptionIndex = highlightedOptionIndex - 1
-							}
-						} else {
-							// Down arrow moves later in list
-							if ( highlightedOptionIndex < highlightedOptionIndexMax ) {
-								highlightedOptionIndex = highlightedOptionIndex + 1
-							}
-						}
-						styleSelectOptions.forEach(function(option, index){
-							if ( index === highlightedOptionIndex ) {
-								option.classList.add('highlighted')
-							} else {
-								option.classList.remove('highlighted')
-							}
-						})
+					break;
+			case KEYCODES.DOWN:
+			case KEYCODES.UP:
+					// Move the highlight up and down
+			if ( ! styledSelectBox.classList.contains('open') ) {
+				// If style select is not open, up/down should open it.
+				toggleStyledSelect(styledSelectBox);
+			} else {
+				// If style select is already open, these should change what the highlighted option is
+				if ( ev.keyCode === KEYCODES.UP ) {
+					// Up arrow moves earlier in list
+					if ( highlightedOptionIndex !== 0 ) {
+						highlightedOptionIndex = highlightedOptionIndex - 1
 					}
-					ev.preventDefault();
-					ev.stopPropagation();
-					break;
-				// User has picked an item from the keyboard
-				case KEYCODES.ENTER:
-					var highlightedOption = styledSelectedOption.parentNode.querySelectorAll('.ss-option')[highlightedOptionIndex],
-						newValue = highlightedOption.dataset.value,
-						newLabel = highlightedOption.textContent;
+				} else {
+					// Down arrow moves later in list
+					if ( highlightedOptionIndex < highlightedOptionIndexMax ) {
+						highlightedOptionIndex = highlightedOptionIndex + 1
+					}
+				}
+				styleSelectOptions.forEach(function(option, index){
+					if ( index === highlightedOptionIndex ) {
+						option.classList.add('highlighted')
+					} else {
+						option.classList.remove('highlighted')
+					}
+				})
+			}
+			ev.preventDefault();
+			ev.stopPropagation();
+			break;
+			// User has picked an item from the keyboard
+			case KEYCODES.ENTER:
+			var highlightedOption = styledSelectedOption.parentNode.querySelectorAll('.ss-option')[highlightedOptionIndex],
+			newValue = highlightedOption.dataset.value,
+			newLabel = highlightedOption.textContent;
 
-					changeRealSelectBox(newValue, newLabel);
-					ev.preventDefault();
-					ev.stopPropagation();
-					break;
+			changeRealSelectBox(newValue, newLabel);
+			ev.preventDefault();
+			ev.stopPropagation();
+			break;
 			}
 		});
 
@@ -386,6 +399,6 @@
 
 	};
 
-// Close UMD module
+	// Close UMD module
 }));
 
