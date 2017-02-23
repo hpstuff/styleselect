@@ -179,7 +179,7 @@
 
 		setInterval(function(){
 			if (realSelect.selectedIndex !== selectedIndex){
-				let selectedRealOption = realOptions[realSelect.selectedIndex];
+				var selectedRealOption = realOptions[realSelect.selectedIndex];
 				changeRealSelectBox(selectedRealOption.value, selectedRealOption.innerHTML, true);
 				selectedIndex = realSelect.selectedIndex;
 			}
